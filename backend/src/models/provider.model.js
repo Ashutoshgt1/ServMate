@@ -1,23 +1,21 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const providerSchema = new mongoose.Schema({
-  // Basic Info
   name: { type: String, required: true },
   phone: { type: String, required: true, unique: true },
-  email: String,
-  password: String,
+  email: { type: String, lowercase: true, trim: true },
+  password: { type: String, required: [true, "Password is required"] },
 
-  // Service they provide (linked to Service model)
   service: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Service',
     required: true
   },
 
-  // Availability
   availability: { type: Boolean, default: true },
 
-  // Location Info
   location: {
     city: String,
     coordinates: {
@@ -26,16 +24,13 @@ const providerSchema = new mongoose.Schema({
     }
   },
 
-  // Booking Info
   assignedBookings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Booking' }],
 
-  // Ratings & Performance
   ratings: { type: Number, default: 0 },
   totalJobsCompleted: { type: Number, default: 0 },
 
-  // Salary System
   salaryDetails: {
-    baseSalary: { type: Number, default: 0 },             // Will fetch from Service
+    baseSalary: { type: Number, default: 0 },
     currentSalary: { type: Number, default: 0 },
     isEligibleThisMonth: { type: Boolean, default: false },
     lastSalaryPaidOn: Date,
@@ -43,7 +38,6 @@ const providerSchema = new mongoose.Schema({
     minimumWorkRequired: { type: Number, default: 1 }
   },
 
-  // Monthly Activity
   monthlyActivity: [
     {
       month: String,
@@ -53,7 +47,6 @@ const providerSchema = new mongoose.Schema({
     }
   ],
 
-  // Payment History
   paymentHistory: [
     {
       amount: Number,
@@ -61,7 +54,47 @@ const providerSchema = new mongoose.Schema({
       bookingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' },
       status: { type: String, enum: ['Paid', 'Pending'], default: 'Pending' }
     }
-  ]
+  ],
+
+  refreshToken: { type: String }
+
 }, { timestamps: true });
 
-module.exports = mongoose.model('Provider', providerSchema);
+
+// 🔐 Hash password before saving
+providerSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// 🔐 Password verification method
+providerSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+// 🔐 Generate access token
+providerSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      phone: this.phone,
+      name: this.name,
+      email: this.email
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" }
+  );
+};
+
+// 🔐 Generate refresh token
+providerSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    { _id: this._id },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
+  );
+};
+
+const Provider = mongoose.model("Provider", providerSchema);
+export default Provider;
