@@ -20,6 +20,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     const { _id, role } = decodedToken;
+    console.log(_id+""+role)
 
     if (!_id || !role) {
       throw new ApiError(401, "Invalid token payload");

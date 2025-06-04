@@ -16,9 +16,12 @@ app.use(cookieParser())
 
 //routes
 import customerRoutes from "./src/routes/customer.route.js";
-app.use("/api/customers", customerRoutes);
+import serviceRoutes from "./src/routes/service.route.js"
+import providerRoutes from "./src/routes/provider.route.js"
 
-app.get("/test", (req, res) => res.send("API is working"));
+app.use("/api/customers", customerRoutes);
+app.use('/api/service',serviceRoutes)
+app.use('/api/provider',providerRoutes)
 
 
 export { app }

@@ -113,4 +113,30 @@ const loginCustomer = asyncHandler(async (req, res) => {
   );
 });
 
-export { registerCustomer , loginCustomer };
+
+// ✅ CUSTOMER LOGOUT CONTROLLER
+const logoutCustomer = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+  if (!refreshToken) {
+    throw new ApiError(400, "No refresh token found");
+  }
+
+  const customer = await Customer.findOne({ refreshToken });
+  if (!customer) {
+    res.clearCookie("refreshToken");
+    return res.status(200).json(new ApiResponse(200, {}, "Logged out"));
+  }
+
+  customer.refreshToken = "";
+  await customer.save({ validateBeforeSave: false });
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict"
+  });
+
+  res.status(200).json(new ApiResponse(200, {}, "Logged out successfully"));
+});
+
+export { registerCustomer , loginCustomer , logoutCustomer };

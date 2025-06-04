@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const providerSchema = new mongoose.Schema({
@@ -80,7 +80,8 @@ providerSchema.methods.generateAccessToken = function () {
       _id: this._id,
       phone: this.phone,
       name: this.name,
-      email: this.email
+      email: this.email,
+      role: "provider"
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" }
@@ -90,7 +91,9 @@ providerSchema.methods.generateAccessToken = function () {
 // 🔐 Generate refresh token
 providerSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
-    { _id: this._id },
+    { _id: this._id ,
+      
+    },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
   );

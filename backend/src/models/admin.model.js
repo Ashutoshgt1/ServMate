@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const adminSchema = new mongoose.Schema({
@@ -31,7 +31,8 @@ adminSchema.methods.generateAccessToken = function () {
     {
       _id: this._id,
       phone: this.phone,
-      superAdmin: this.superAdmin
+      superAdmin: this.superAdmin,
+      role:"admin"
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -51,4 +52,6 @@ adminSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const Admin = mongoose.model("Admin", adminSchema);
+const Admin = mongoose.model("Admin", adminSchema);
+
+export default Admin

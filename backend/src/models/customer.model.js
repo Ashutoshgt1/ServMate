@@ -57,6 +57,7 @@ customerSchema.methods.generateAccessToken = function () {
       name: this.name,
       phone: this.phone,
       email: this.email,
+      role: "customer"
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
