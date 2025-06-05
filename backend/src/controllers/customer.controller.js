@@ -139,4 +139,131 @@ const logoutCustomer = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, {}, "Logged out successfully"));
 });
 
-export { registerCustomer , loginCustomer , logoutCustomer };
+
+const getCustomerProfile = asyncHandler(async (req, res) => {
+  const customer = req.user; // populated by verifyJWT middleware
+  res.status(200).json(new ApiResponse(200, customer, "Customer profile fetched"));
+});
+
+
+
+const updateCustomerProfile = asyncHandler(async (req, res) => {
+  const customer = req.user;
+
+  const { name, phone, email } = req.body;
+
+  if (name) customer.name = name;
+  if (phone) customer.phone = phone;
+  if (email) customer.email = email;
+
+  await customer.save();
+
+  res.status(200).json(
+    new ApiResponse(200, {
+      _id: customer._id,
+      name: customer.name,
+      phone: customer.phone,
+      email: customer.email,
+    }, "Customer profile updated")
+  );
+});
+
+
+
+
+
+const changeCustomerPassword = asyncHandler(async (req, res) => {
+  const customer = req.user;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Old and new passwords are required");
+  }
+
+  const isMatch = await customer.isPasswordCorrect(oldPassword);
+  if (!isMatch) {
+    throw new ApiError(401, "Old password is incorrect");
+  }
+
+  customer.password = newPassword;
+  await customer.save();
+
+  res.status(200).json(new ApiResponse(200, null, "Password changed successfully"));
+});
+
+
+
+const getAllCustomers = asyncHandler(async (req, res) => {
+  const customers = await Customer.find().select("-password -refreshToken");
+
+  res.status(200).json(
+    new ApiResponse(200, customers, "All customers fetched")
+  );
+});
+
+
+
+const getCustomerById = asyncHandler(async (req, res) => {
+  const { customerId } = req.params;
+
+  const customer = await Customer.findById(customerId).select("-password -refreshToken");
+  if (!customer) {
+    throw new ApiError(404, "Customer not found");
+  }
+
+  res.status(200).json(new ApiResponse(200, customer, "Customer details fetched"));
+});
+
+
+
+const deleteCustomer = asyncHandler(async (req, res) => {
+  const { customerId } = req.params;
+
+  const customer = await Customer.findByIdAndDelete(customerId);
+  if (!customer) {
+    throw new ApiError(404, "Customer not found");
+  }
+
+  res.status(200).json(new ApiResponse(200, {}, "Customer account deleted successfully"));
+});
+
+
+const updateCustomerAddress = asyncHandler(async (req, res) => {
+  const { address } = req.body;
+
+  if (!address) {
+    throw new ApiError(400, "Address is required");
+  }
+
+  const customer = await Customer.findById(req.user._id);
+  if (!customer) throw new ApiError(404, "Customer not found");
+
+  customer.address = address;
+  await customer.save();
+
+  res.status(200).json(new ApiResponse(200, customer, "Address updated successfully"));
+});
+
+
+import Booking from "../models/booking.model.js";
+
+const getCustomerBookings = asyncHandler(async (req, res) => {
+  const bookings = await Booking.find({ customer: req.user._id })
+    .populate("provider", "name phone service")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json(new ApiResponse(200, bookings, "Fetched customer bookings"));
+});
+
+
+
+export { registerCustomer ,
+     loginCustomer , 
+     logoutCustomer , 
+     getCustomerProfile,
+     updateCustomerProfile,
+     changeCustomerPassword,
+     getAllCustomers,
+    getCustomerById,
+    deleteCustomer,
+    updateCustomerAddress };
