@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans text-gray-800 leading-relaxed overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .grain-pattern {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="50" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  }
+  
+  .btn {
+    @apply py-3 px-8 rounded-full font-semibold text-lg flex items-center gap-2 transition-all duration-300 shadow-lg;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-[#ff6b6b] to-[#ffa500] text-white;
+  }
+  
+  .btn-secondary {
+    @apply bg-white/20 text-white border-2 border-white/30;
+  }
+  
+  .btn:hover {
+    @apply -translate-y-1 scale-105 shadow-xl;
+  }
+  
+  .section-title {
+    @apply text-4xl font-bold text-center mb-12;
+  }
+  
+  .step-icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl bg-gradient-to-r from-[#667eea] to-[#764ba2] flex-shrink-0;
+  }
+  
+  .step {
+    @apply flex items-center gap-4 p-4 bg-gray-100 rounded-xl transition-all duration-300;
+  }
+  
+  .step:hover {
+    @apply bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white scale-[1.02];
+  }
+  
+  .service-card {
+    @apply bg-white rounded-2xl p-8 text-center shadow-xl transition-all duration-300 border-2 border-transparent;
+  }
+  
+  .service-card:hover {
+    @apply -translate-y-2 scale-[1.02] border-[#667eea] shadow-2xl shadow-[#667eea]/30;
+  }
+  
+  .service-icon {
+    @apply w-20 h-20 rounded-full flex items-center justify-center text-white mx-auto mb-6 bg-gradient-to-r from-[#667eea] to-[#764ba2];
+  }
+  
+  .feature {
+    @apply text-center p-8 rounded-2xl bg-white/10 backdrop-blur-md transition-all duration-300;
+  }
+  
+  .feature:hover {
+    @apply bg-white/20 -translate-y-1;
+  }
+  
+  .feature-icon {
+    @apply w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-white/20;
+  }
+  
+  .testimonial {
+    @apply bg-white p-8 rounded-2xl shadow-xl transition-all duration-300;
+  }
+  
+  .testimonial:hover {
+    @apply -translate-y-1;
+  }
+  
+  .author-avatar {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-white font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2];
+  }
+  
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+  
+  @keyframes slideInUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-float {
+    animation: float 20s ease-in-out infinite;
+  }
+  
+  .animate-slideInUp {
+    animation: slideInUp 1s ease-out forwards;
+  }
+}
