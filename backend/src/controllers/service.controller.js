@@ -29,4 +29,18 @@ const addService = asyncHandler(async (req, res) => {
   );
 });
 
-export { addService };
+const getAllServices = asyncHandler(async (req, res) => {
+  try {
+    const services = await Service.find({}); // {} to get all documents
+    // console.log(services)
+
+    return res.status(200).json(
+      new ApiResponse(200, services, "Services retrieved successfully")
+    );
+  } catch (error) {
+    // asyncHandler will handle this, but explicit catch adds clarity
+    throw error; 
+  }
+});
+
+export { addService ,getAllServices };

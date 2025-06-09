@@ -50,7 +50,7 @@ const registerCustomer = asyncHandler(async (req, res) => {
     phone,
     email,
     password: password,
-    addresses,
+    addresses:addresses || null,
   });
 
   return res.status(201).json(
