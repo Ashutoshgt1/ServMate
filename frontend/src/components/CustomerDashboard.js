@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, Settings, Home, ClipboardList, Clock, CheckCircle, 
   Star, History, Search, MapPin, Calendar, CreditCard, 
@@ -7,12 +8,18 @@ import {
 import axios from 'axios';
 
 const CustomerDashboard = () => {
+    const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userData, setUserData] = useState({
+    _id:"dk",
+    updatedAt:"2025-06-09T18:44:12.756Z",
+    __v:0,
+    refreshToken:"",
+    createdAt:"2025-06-07T15:27:34.585Z",
     name: 'John Doe',
     email: 'john@example.com',
     phone: '+1 (555) 123-4567',
-    address: '123 Main St, Cityville'
+    addresses: '123 Main St, Cityville'
   });
   const [services, setServices] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -42,6 +49,19 @@ const CustomerDashboard = () => {
         
         setServices(servicesResponse.data);
         console.log(services)
+              const accessToken = localStorage.getItem('accessToken');
+              console.log(accessToken)
+
+        const curentUser = await axios.post('http://localhost:8000/api/customers/get-customer',{}, {
+        withCredentials: true,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,  // Send access token here
+          } // 👈 This is important!
+      })
+
+        setUserData(curentUser.data.data.user)
+        console.log(userData)
+        console.log(curentUser.data.data.user)
         // Fetch user bookings
         // const bookingsResponse = await axios.get('http://localhost:8000/api/bookings');
         // setBookings(bookingsResponse.data);
@@ -52,6 +72,26 @@ const CustomerDashboard = () => {
     
     fetchData();
   }, []);
+
+
+  const handleLogout = async (e) => {
+    try {
+        const logoutuser = axios.post("http://localhost:8000/api/customers/logout",{},{
+            withCredentials:true
+        })
+        if(!logoutuser){
+            alert("something went wrong")
+        }
+
+        else{
+            navigate("")
+        }
+        
+    } catch (error) {
+        console.log("Logout failed",error)
+        alert("Logout Failed Try Again")
+    }
+  }
 
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
@@ -795,7 +835,7 @@ const CustomerDashboard = () => {
                   <span>{item.label}</span>
                 </button>
               ))}
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 text-left">
+              <button onClick={handleLogout} className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 text-left">
                 <LogOut className="w-5 h-5" />
                 <span>Logout</span>
               </button>

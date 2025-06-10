@@ -4,9 +4,12 @@ import {
   CheckCircle // Added missing import
 } from 'lucide-react';
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 
 const CustomerLogin = () => {
+
+      const navigate = useNavigate(); // Initialize navigate
+
   const [formData, setFormData] = useState({
     phone: '',
     password: ''
@@ -54,16 +57,16 @@ const CustomerLogin = () => {
       const response = await axios.post("http://localhost:8000/api/customers/login", {
         phone: formData.phone.trim(),
         password: formData.password
-      });
+      },{withCredentials:true});
+            localStorage.setItem("accessToken", response.data.data.accessToken);
+
 
       if (response.data.success) {
         setIsSuccess(true);
         // Store token/user data here (localStorage/context)
         
         // Redirect after delay
-        setTimeout(() => {
-          // history.push('/dashboard'); // Actual redirect
-        }, 2000);
+        setTimeout(() => navigate("/customer/dashboard"), 2000);
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -86,7 +89,7 @@ const CustomerLogin = () => {
           <p className="text-gray-600 mb-6">
             Welcome back to Local Service Connect!
           </p>
-          <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
+          <button onClick={() => navigate("/customer/dashboard")} className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
             Go to Dashboard
           </button>
         </div>
