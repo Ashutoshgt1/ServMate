@@ -96,6 +96,13 @@ const loginCustomer = asyncHandler(async (req, res) => {
     sameSite: "Strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
+  res.cookie('accessToken', accessToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'Strict',
+  maxAge: 15 * 60 * 1000, // e.g. 15 mins
+});
+
 
   // 6. Send response
   res.status(200).json(
@@ -140,10 +147,7 @@ const logoutCustomer = asyncHandler(async (req, res) => {
 });
 
 
-const getCustomerProfile = asyncHandler(async (req, res) => {
-  const customer = req.user; // populated by verifyJWT middleware
-  res.status(200).json(new ApiResponse(200, customer, "Customer profile fetched"));
-});
+
 
 
 
@@ -203,15 +207,17 @@ const getAllCustomers = asyncHandler(async (req, res) => {
 
 
 
-const getCustomerById = asyncHandler(async (req, res) => {
-  const { customerId } = req.params;
+const getCurrentCustomer= asyncHandler(async (req, res) => {
+  const currentCustomer = req.user;
 
-  const customer = await Customer.findById(customerId).select("-password -refreshToken");
-  if (!customer) {
-    throw new ApiError(404, "Customer not found");
-  }
+ 
 
-  res.status(200).json(new ApiResponse(200, customer, "Customer details fetched"));
+  res.status(200).json(new ApiResponse(200,{
+
+     user: currentCustomer,
+     role:req.user.role
+  } ,
+   "Customer details fetched"));
 });
 
 
@@ -260,10 +266,9 @@ const getCustomerBookings = asyncHandler(async (req, res) => {
 export { registerCustomer ,
      loginCustomer , 
      logoutCustomer , 
-     getCustomerProfile,
      updateCustomerProfile,
      changeCustomerPassword,
      getAllCustomers,
-    getCustomerById,
+    getCurrentCustomer,
     deleteCustomer,
     updateCustomerAddress };

@@ -9,6 +9,7 @@ import Admin from "../models/admin.model.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
+    console.log(req.header("Authorization"))
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
