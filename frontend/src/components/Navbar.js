@@ -1,16 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Wrench, Menu, ChevronDown, Calendar, UserPlus, Zap, Hammer, Wind,
-  ShieldCheck, IndianRupee, MousePointerClick, TrendingUp
+  ShieldCheck, IndianRupee, MousePointerClick, TrendingUp, User
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
   const dropdownRef = useRef(null);
-
-  useEffect(() => {
+  const navigate = useNavigate()
+   useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('authToken');
+      setIsLoggedIn(!!token);
+    };
+    
+    checkAuth();
+    // You might want to add an event listener for storage changes
+    // to handle login/logout from other tabs
+  
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
     };
@@ -40,6 +51,13 @@ const Navbar = () => {
         behavior: 'smooth'
       });
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken')
+    setIsLoggedIn(false);
+    navigate('/'); // Redirect to home after logout
   };
 
   return (
@@ -87,27 +105,63 @@ const Navbar = () => {
                 Contact Us
               </button>
             </li>
-            <li className="relative" ref={dropdownRef}>
-              <button 
-                className="flex items-center gap-2 bg-white/20 py-2 px-6 rounded-full hover:bg-white/30 hover:scale-105 transition-all"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                Login / Sign Up
-                <ChevronDown />
-              </button>
-              <div className={`absolute top-full right-0 bg-white min-w-[160px] shadow-xl rounded-xl mt-2 transition-all duration-300 ${
-                isDropdownOpen 
-                  ? 'opacity-100 visible translate-y-0' 
-                  : 'opacity-0 invisible -translate-y-2'
-              }`}>
-                <Link to="/customer/register"  className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
-                  Register Customer
-                </Link>
-                <a href="/customer/login" className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
-                  Login Customer
-                </a>
-              </div>
-            </li>
+            
+            {isLoggedIn ? (
+              // Logged in state
+              <li className="relative" ref={dropdownRef}>
+                <button 
+                  className="flex items-center gap-2 bg-white/20 py-2 px-6 rounded-full hover:bg-white/30 hover:scale-105 transition-all"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  <User size={20} /> My Account
+                  <ChevronDown />
+                </button>
+                <div className={`absolute top-full right-0 bg-white min-w-[160px] shadow-xl rounded-xl mt-2 transition-all duration-300 ${
+                  isDropdownOpen 
+                    ? 'opacity-100 visible translate-y-0' 
+                    : 'opacity-0 invisible -translate-y-2'
+                }`}>
+                  <Link to="/dashboard" className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
+                    Dashboard
+                  </Link>
+                  <Link to="/profile" className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
+                    My Profile
+                  </Link>
+                  <Link to="/bookings" className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
+                    My Bookings
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full text-left py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </li>
+            ) : (
+              // Not logged in state
+              <li className="relative" ref={dropdownRef}>
+                <button 
+                  className="flex items-center gap-2 bg-white/20 py-2 px-6 rounded-full hover:bg-white/30 hover:scale-105 transition-all"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  Login / Sign Up
+                  <ChevronDown />
+                </button>
+                <div className={`absolute top-full right-0 bg-white min-w-[160px] shadow-xl rounded-xl mt-2 transition-all duration-300 ${
+                  isDropdownOpen 
+                    ? 'opacity-100 visible translate-y-0' 
+                    : 'opacity-0 invisible -translate-y-2'
+                }`}>
+                  <Link to="/customer/register" className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
+                    Register Customer
+                  </Link>
+                  <Link to="/customer/login" className="block py-3 px-4 text-gray-800 hover:bg-gray-100 rounded-lg m-1">
+                    Login Customer
+                  </Link>
+                </div>
+              </li>
+            )}
           </ul>
           <button className="md:hidden text-white">
             <Menu />
@@ -118,5 +172,4 @@ const Navbar = () => {
   );
 };
 
-
-export default Navbar
+export default Navbar;

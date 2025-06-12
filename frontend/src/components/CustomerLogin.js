@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { 
   Wrench, Eye, EyeOff, Phone, Lock, AlertCircle, LogIn, 
   CheckCircle // Added missing import
@@ -8,8 +8,13 @@ import { Link , useNavigate} from 'react-router-dom';
 
 const CustomerLogin = () => {
 
+
+
+
       const navigate = useNavigate(); // Initialize navigate
 
+
+     
   const [formData, setFormData] = useState({
     phone: '',
     password: ''

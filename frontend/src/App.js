@@ -5,6 +5,7 @@ import Home from './components/Home.js';
 import CustomerRegistration from './components/CustomerRegisteration.js';
 import CustomerLogin from './components/CustomerLogin.js';
 import CustomerDashboard from './components/CustomerDashboard.js';
+import ChatBot from './components/Chatbot.js';
 
 function App() {
   return (
@@ -35,16 +36,23 @@ function App() {
               <CustomerLogin />
             } 
           />
-
           
+          <Route 
+            path="/customer/chatbot" 
+            element={
+              <ChatBot />
+            } 
+          />
 
-
+            
           <Route 
             path="/customer/dashboard" 
             element={
               <CustomerDashboard />
+             
             } 
           />
+          
           
           {/* Provider Login page (placeholder for future) */}
           <Route 

@@ -12,10 +12,6 @@ const CustomerDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userData, setUserData] = useState({
     _id:"dk",
-    updatedAt:"2025-06-09T18:44:12.756Z",
-    __v:0,
-    refreshToken:"",
-    createdAt:"2025-06-07T15:27:34.585Z",
     name: 'John Doe',
     email: 'john@example.com',
     phone: '+1 (555) 123-4567',
@@ -56,10 +52,11 @@ const CustomerDashboard = () => {
         withCredentials: true,
         headers: {
             Authorization: `Bearer ${accessToken}`,  // Send access token here
-          } // 👈 This is important!
+          } 
       })
-
-        setUserData(curentUser.data.data.user)
+        const {name,email,phone,addresses,_id} = curentUser.data.data.user
+        const user = {name,email,phone,addresses,_id}
+        setUserData(user)
         console.log(userData)
         console.log(curentUser.data.data.user)
         // Fetch user bookings
@@ -84,7 +81,8 @@ const CustomerDashboard = () => {
         }
 
         else{
-            navigate("")
+          console.log("logout successfully")
+            navigate("/")
         }
         
     } catch (error) {
@@ -835,7 +833,7 @@ const CustomerDashboard = () => {
                   <span>{item.label}</span>
                 </button>
               ))}
-              <button onClick={handleLogout} className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 text-left">
+              <button onClick={()=>handleLogout()} className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 text-left">
                 <LogOut className="w-5 h-5" />
                 <span>Logout</span>
               </button>
@@ -874,7 +872,7 @@ const CustomerDashboard = () => {
               <span>{item.label}</span>
             </button>
           ))}
-          <button className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 text-left mt-10">
+          <button onClick={()=>handleLogout()} className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 text-left mt-10">
             <LogOut className="w-5 h-5" />
             <span>Logout</span>
           </button>
