@@ -6,6 +6,8 @@ import CustomerRegistration from './components/CustomerRegisteration.js';
 import CustomerLogin from './components/CustomerLogin.js';
 import CustomerDashboard from './components/CustomerDashboard.js';
 import ChatBot from './components/Chatbot.js';
+import ProtectedRoute from './components/ProtectedRoute.js';
+
 
 function App() {
   return (
@@ -33,7 +35,9 @@ function App() {
           <Route 
             path="/customer/login" 
             element={
+              
               <CustomerLogin />
+              
             } 
           />
           
@@ -48,8 +52,9 @@ function App() {
           <Route 
             path="/customer/dashboard" 
             element={
+              <ProtectedRoute>
               <CustomerDashboard />
-             
+             </ProtectedRoute>
             } 
           />
           

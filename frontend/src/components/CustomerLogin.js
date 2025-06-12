@@ -13,7 +13,12 @@ const CustomerLogin = () => {
 
       const navigate = useNavigate(); // Initialize navigate
 
-
+useEffect(() => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    navigate("/customer/dashboard");
+  }
+}, []);
      
   const [formData, setFormData] = useState({
     phone: '',
@@ -64,7 +69,10 @@ const CustomerLogin = () => {
         password: formData.password
       },{withCredentials:true});
             localStorage.setItem("accessToken", response.data.data.accessToken);
+            window.dispatchEvent(new Event("authChanged"));
 
+
+      
 
       if (response.data.success) {
         setIsSuccess(true);

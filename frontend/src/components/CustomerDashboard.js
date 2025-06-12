@@ -82,6 +82,9 @@ const CustomerDashboard = () => {
 
         else{
           console.log("logout successfully")
+           localStorage.removeItem("accessToken");
+           window.dispatchEvent(new Event("authChanged"));
+
             navigate("/")
         }
         
