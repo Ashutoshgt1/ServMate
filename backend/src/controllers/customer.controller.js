@@ -142,6 +142,11 @@ const logoutCustomer = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict"
   });
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict"
+  });
 
   res.status(200).json(new ApiResponse(200, {}, "Logged out successfully"));
 });

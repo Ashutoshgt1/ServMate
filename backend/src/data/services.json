@@ -1,0 +1,58 @@
+{
+  "Plumbing": {
+    "questions": [
+      "Is there a water leak?",
+      "Is the water pressure low?",
+      "Is any drainage blocked?",
+      "Is there an unusual noise from pipes?"
+    ],
+    "issues": [
+      { "conditions": ["leak"], "issue": "Pipe Replacement", "price": 1200 },
+      { "conditions": ["pressure"], "issue": "Valve Cleaning", "price": 500 },
+      { "conditions": ["drainage", "blocked"], "issue": "Drain Unblocking", "price": 700 },
+      { "conditions": ["noise"], "issue": "Air in Pipes", "price": 400 }
+    ]
+  },
+  "Electrician": {
+    "questions": [
+      "Are the lights flickering?",
+      "Is there a power outage in some rooms?",
+      "Are sockets not working?",
+      "Is there a burning smell from wiring?"
+    ],
+    "issues": [
+      { "conditions": ["flickering"], "issue": "Loose Wiring Fix", "price": 800 },
+      { "conditions": ["power", "outage"], "issue": "Circuit Breaker Replacement", "price": 1500 },
+      { "conditions": ["sockets"], "issue": "Socket Repair", "price": 400 },
+      { "conditions": ["burning", "smell"], "issue": "Wiring Inspection & Replacement", "price": 2000 }
+    ]
+  },
+  "Gardening": {
+    "questions": [
+      "Are the plants turning yellow?",
+      "Is there weed overgrowth?",
+      "Is the soil too dry or cracked?",
+      "Do you notice pest damage?"
+    ],
+    "issues": [
+      { "conditions": ["yellow"], "issue": "Soil Nutrition Treatment", "price": 600 },
+      { "conditions": ["weed"], "issue": "Weed Removal Service", "price": 800 },
+      { "conditions": ["dry", "cracked"], "issue": "Soil Watering & Mulching", "price": 500 },
+      { "conditions": ["pest"], "issue": "Pest Control", "price": 1000 }
+    ]
+  },
+  "AC Repair": {
+    "questions": [
+      "Is the AC not cooling?",
+      "Is it making unusual noise?",
+      "Is the unit leaking water?",
+      "Is the AC switching on and off?"
+    ],
+    "issues": [
+      { "conditions": ["not cooling"], "issue": "Gas Refill", "price": 1200 },
+      { "conditions": ["noise"], "issue": "Fan Motor Replacement", "price": 1800 },
+      { "conditions": ["leak"], "issue": "Drain Pipe Cleaning", "price": 600 },
+      { "conditions": ["switching"], "issue": "Compressor Repair", "price": 2500 }
+    ]
+  }
+}
